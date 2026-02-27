@@ -25,8 +25,13 @@ export { Prisma };
  */
 export type User = Prisma.UserModel;
 /**
- * Model Post
+ * Model Game
  *
  */
-export type Post = Prisma.PostModel;
+export type Game = Prisma.GameModel;
+/**
+ * Model Move
+ *
+ */
+export type Move = Prisma.MoveModel;
 //# sourceMappingURL=client.d.ts.map

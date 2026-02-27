@@ -27,7 +27,8 @@ export declare const JsonNull: import("@prisma/client-runtime-utils").JsonNullCl
 export declare const AnyNull: import("@prisma/client-runtime-utils").AnyNullClass;
 export declare const ModelName: {
     readonly User: "User";
-    readonly Post: "Post";
+    readonly Game: "Game";
+    readonly Move: "Move";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -39,18 +40,46 @@ export declare const TransactionIsolationLevel: {
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
 export declare const UserScalarFieldEnum: {
     readonly id: "id";
-    readonly email: "email";
+    readonly clerkId: "clerkId";
+    readonly username: "username";
     readonly name: "name";
+    readonly email: "email";
+    readonly role: "role";
+    readonly rating: "rating";
+    readonly createdAt: "createdAt";
+    readonly lastLogin: "lastLogin";
 };
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
-export declare const PostScalarFieldEnum: {
+export declare const GameScalarFieldEnum: {
     readonly id: "id";
-    readonly title: "title";
-    readonly content: "content";
-    readonly published: "published";
-    readonly authorId: "authorId";
+    readonly whitePlayerId: "whitePlayerId";
+    readonly blackPlayerId: "blackPlayerId";
+    readonly status: "status";
+    readonly result: "result";
+    readonly timeControl: "timeControl";
+    readonly startingFen: "startingFen";
+    readonly currentFen: "currentFen";
+    readonly startAt: "startAt";
+    readonly endAt: "endAt";
+    readonly opening: "opening";
+    readonly event: "event";
 };
-export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum];
+export type GameScalarFieldEnum = (typeof GameScalarFieldEnum)[keyof typeof GameScalarFieldEnum];
+export declare const MoveScalarFieldEnum: {
+    readonly id: "id";
+    readonly gameId: "gameId";
+    readonly moveNumber: "moveNumber";
+    readonly from: "from";
+    readonly to: "to";
+    readonly comments: "comments";
+    readonly before: "before";
+    readonly after: "after";
+    readonly timetake: "timetake";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+    readonly san: "san";
+};
+export type MoveScalarFieldEnum = (typeof MoveScalarFieldEnum)[keyof typeof MoveScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";

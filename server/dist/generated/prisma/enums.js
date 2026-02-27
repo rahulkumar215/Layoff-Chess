@@ -7,6 +7,27 @@
 *
 * 🟢 You can import this file directly.
 */
-// This file is empty because there are no enums in the schema.
-export {};
+export const GameStatus = {
+    IN_PROGRESS: 'IN_PROGRESS',
+    COMPLETED: 'COMPLETED',
+    ABANDONED: 'ABANDONED',
+    TIME_UP: 'TIME_UP',
+    PLAYER_EXIT: 'PLAYER_EXIT'
+};
+export const GameResult = {
+    WHITE_WINS: 'WHITE_WINS',
+    BLACK_WINS: 'BLACK_WINS',
+    DRAW: 'DRAW'
+};
+export const TimeControl = {
+    CLASSICAL: 'CLASSICAL',
+    RAPID: 'RAPID',
+    BLITZ: 'BLITZ',
+    BULLET: 'BULLET'
+};
+export const Role = {
+    ADMIN: 'ADMIN',
+    USER: 'USER',
+    GUEST: 'GUEST'
+};
 //# sourceMappingURL=enums.js.map

@@ -40,7 +40,8 @@ export const JsonNull = runtime.JsonNull;
 export const AnyNull = runtime.AnyNull;
 export const ModelName = {
     User: 'User',
-    Post: 'Post'
+    Game: 'Game',
+    Move: 'Move'
 };
 /*
  * Enums
@@ -53,15 +54,42 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 });
 export const UserScalarFieldEnum = {
     id: 'id',
+    clerkId: 'clerkId',
+    username: 'username',
+    name: 'name',
     email: 'email',
-    name: 'name'
+    role: 'role',
+    rating: 'rating',
+    createdAt: 'createdAt',
+    lastLogin: 'lastLogin'
 };
-export const PostScalarFieldEnum = {
+export const GameScalarFieldEnum = {
     id: 'id',
-    title: 'title',
-    content: 'content',
-    published: 'published',
-    authorId: 'authorId'
+    whitePlayerId: 'whitePlayerId',
+    blackPlayerId: 'blackPlayerId',
+    status: 'status',
+    result: 'result',
+    timeControl: 'timeControl',
+    startingFen: 'startingFen',
+    currentFen: 'currentFen',
+    startAt: 'startAt',
+    endAt: 'endAt',
+    opening: 'opening',
+    event: 'event'
+};
+export const MoveScalarFieldEnum = {
+    id: 'id',
+    gameId: 'gameId',
+    moveNumber: 'moveNumber',
+    from: 'from',
+    to: 'to',
+    comments: 'comments',
+    before: 'before',
+    after: 'after',
+    timetake: 'timetake',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    san: 'san'
 };
 export const SortOrder = {
     asc: 'asc',

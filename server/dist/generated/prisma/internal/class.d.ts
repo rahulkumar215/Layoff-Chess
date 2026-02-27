@@ -123,14 +123,25 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
         omit: OmitOpts;
     }>;
     /**
-     * `prisma.post`: Exposes CRUD operations for the **Post** model.
+     * `prisma.game`: Exposes CRUD operations for the **Game** model.
       * Example usage:
       * ```ts
-      * // Fetch zero or more Posts
-      * const posts = await prisma.post.findMany()
+      * // Fetch zero or more Games
+      * const games = await prisma.game.findMany()
       * ```
       */
-    get post(): Prisma.PostDelegate<ExtArgs, {
+    get game(): Prisma.GameDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
+     * `prisma.move`: Exposes CRUD operations for the **Move** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more Moves
+      * const moves = await prisma.move.findMany()
+      * ```
+      */
+    get move(): Prisma.MoveDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
 }

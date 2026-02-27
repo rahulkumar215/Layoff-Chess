@@ -12,8 +12,10 @@ import hpp from "hpp";
 import cookieParser from "cookie-parser";
 import { COOKIE_MAX_AGE } from "./consts.js";
 import appConfig from "./config/appConfig.js";
+import { clerkMiddleware, getAuth, requireAuth } from "@clerk/express";
 
-const { COOKIE_SECRET, ALLOWED_HOSTS, PORT, NODE_ENV } = appConfig;
+const { COOKIE_SECRET, ALLOWED_HOSTS, PORT, NODE_ENV, PUBLISHABLE_KEY } =
+  appConfig;
 
 const app: Application = express();
 
@@ -101,6 +103,11 @@ app.get("/health", (req: Request, res: Response) => {
   });
 });
 
+app.use(
+  clerkMiddleware({
+    publishableKey: PUBLISHABLE_KEY,
+  }),
+);
 // initPassport();
 
 app.use("/api", routes);

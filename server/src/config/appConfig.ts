@@ -17,6 +17,9 @@ const appConfig = Object.freeze({
   ALLOWED_HOSTS: getEnvVar("ALLOWED_HOSTS"),
   COOKIE_SECRET: getEnvVar("COOKIE_SECRET"),
   NODE_ENV: getEnvVar("NODE_ENV"),
+  CLERK_WEBHOOK_SIGNING_SECRET: getEnvVar("CLERK_WEBHOOK_SIGNING_SECRET"),
+  PUBLISHABLE_KEY: getEnvVar("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"),
+  CLERK_SECRET_KEY: getEnvVar("CLERK_SECRET_KEY"),
 });
 
 export default appConfig;
