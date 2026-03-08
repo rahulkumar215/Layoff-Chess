@@ -59,7 +59,7 @@ model Move {
   comments   String?
   before     String
   after      String
-  timetake   Int?     @default(0)
+  timeTaken   Int?     @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   san        String?

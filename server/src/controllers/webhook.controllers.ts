@@ -42,6 +42,10 @@ export const userController = async (
     // return res.send("Webhook received");
     const eventType = evt.type;
 
+    if (!eventType.startsWith("user.")) {
+      return res.status(200).end();
+    }
+
     if (eventType === "user.created") {
       const user = await createUser(evt.data);
 

@@ -20,6 +20,7 @@ const appConfig = Object.freeze({
   CLERK_WEBHOOK_SIGNING_SECRET: getEnvVar("CLERK_WEBHOOK_SIGNING_SECRET"),
   PUBLISHABLE_KEY: getEnvVar("NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY"),
   CLERK_SECRET_KEY: getEnvVar("CLERK_SECRET_KEY"),
+  JWT_SECRET: getEnvVar("JWT_SECRET"),
 });
 
 export default appConfig;
