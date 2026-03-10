@@ -4,12 +4,14 @@ import appConfig from "./config/appConfig.js";
 import { WebSocketServer } from "ws";
 import url from "url";
 import { extractAuthUser } from "./SocketManager.js";
+import { GameManger } from "./GameManager.js";
 
 const { PORT } = appConfig;
 
 const server = http.createServer(app);
 
 const wss = new WebSocketServer({ server });
+const gameManager = new GameManger();
 
 server.on("upgrade", (req, ws, head) => {
   console.log("Server upgraded");
@@ -21,7 +23,15 @@ server.on("upgrade", (req, ws, head) => {
 wss.on("connection", (ws, req) => {
   console.log("New Client Connected");
 
-  const token: string = url.parse(req.url, true).query.token;
+  const parsedUrl = url.parse(req.url ?? "", true);
+  const tokenParam = parsedUrl.query.token;
+  const token = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam;
+
+  if (!token) {
+    ws.close(1008, "Missing auth token");
+    return;
+  }
+
   const user = extractAuthUser(token, ws);
   gameManager.addUser(user);
 

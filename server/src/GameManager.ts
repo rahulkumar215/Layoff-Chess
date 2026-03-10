@@ -53,8 +53,9 @@ export class GameManger {
           const game = this.games.find((x) => x.gameId === this.pendingGameId);
           if (!game) {
             console.error("Pending game not found?");
+            return;
           }
-          if (user.userId === game?.player1UserId) {
+          if (user.userId === game.player1UserId) {
             socketManager.broadcast(
               game.gameId,
               JSON.stringify({
@@ -67,7 +68,7 @@ export class GameManger {
             return;
           }
           socketManager.addUser(user, game.gameId);
-          await game?.updateSecondPlayer(user.userId);
+          await game.updateSecondPlayer(user.userId);
           this.pendingGameId = null;
         } else {
           const game = new Game(user.userId, null);
@@ -137,23 +138,24 @@ export class GameManger {
               type: GAME_NOT_FOUND,
             }),
           );
+          return;
         }
 
-        if (gameFromDb?.status !== GameStatus.IN_PROGRESS) {
+        if (gameFromDb.status !== GameStatus.IN_PROGRESS) {
           user.socket.send(
             JSON.stringify({
               type: GAME_ENDED,
               payload: {
-                result: gameFromDb?.result,
-                status: gameFromDb?.status,
-                moves: gameFromDb?.moves,
+                result: gameFromDb.result,
+                status: gameFromDb.status,
+                moves: gameFromDb.moves,
                 blackPlayer: {
-                  id: gameFromDb?.blackPlayer.id,
-                  name: gameFromDb?.blackPlayer.name,
+                  id: gameFromDb.blackPlayer.id,
+                  name: gameFromDb.blackPlayer.name,
                 },
                 whitePlayer: {
-                  id: gameFromDb?.whitePlayer.id,
-                  name: gameFromDb?.whitePlayer.name,
+                  id: gameFromDb.whitePlayer.id,
+                  name: gameFromDb.whitePlayer.name,
                 },
               },
             }),
