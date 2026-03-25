@@ -1,8 +1,10 @@
 import { Router } from "express";
 import webhookRoutes from "./webhook.route.js";
+import authRouter from "./auth.route.js";
 
 const router: Router = Router();
 
 router.use("/webhooks", webhookRoutes);
+router.use("/auth", authRouter);
 
 export default router;

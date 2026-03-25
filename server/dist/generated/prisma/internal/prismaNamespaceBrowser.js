@@ -86,7 +86,7 @@ export const MoveScalarFieldEnum = {
     comments: 'comments',
     before: 'before',
     after: 'after',
-    timetake: 'timetake',
+    timeTaken: 'timeTaken',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     san: 'san'

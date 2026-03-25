@@ -14,11 +14,11 @@ export type AggregateMove = {
 };
 export type MoveAvgAggregateOutputType = {
     moveNumber: number | null;
-    timetake: number | null;
+    timeTaken: number | null;
 };
 export type MoveSumAggregateOutputType = {
     moveNumber: number | null;
-    timetake: number | null;
+    timeTaken: number | null;
 };
 export type MoveMinAggregateOutputType = {
     id: string | null;
@@ -29,7 +29,7 @@ export type MoveMinAggregateOutputType = {
     comments: string | null;
     before: string | null;
     after: string | null;
-    timetake: number | null;
+    timeTaken: number | null;
     createdAt: Date | null;
     updatedAt: Date | null;
     san: string | null;
@@ -43,7 +43,7 @@ export type MoveMaxAggregateOutputType = {
     comments: string | null;
     before: string | null;
     after: string | null;
-    timetake: number | null;
+    timeTaken: number | null;
     createdAt: Date | null;
     updatedAt: Date | null;
     san: string | null;
@@ -57,7 +57,7 @@ export type MoveCountAggregateOutputType = {
     comments: number;
     before: number;
     after: number;
-    timetake: number;
+    timeTaken: number;
     createdAt: number;
     updatedAt: number;
     san: number;
@@ -65,11 +65,11 @@ export type MoveCountAggregateOutputType = {
 };
 export type MoveAvgAggregateInputType = {
     moveNumber?: true;
-    timetake?: true;
+    timeTaken?: true;
 };
 export type MoveSumAggregateInputType = {
     moveNumber?: true;
-    timetake?: true;
+    timeTaken?: true;
 };
 export type MoveMinAggregateInputType = {
     id?: true;
@@ -80,7 +80,7 @@ export type MoveMinAggregateInputType = {
     comments?: true;
     before?: true;
     after?: true;
-    timetake?: true;
+    timeTaken?: true;
     createdAt?: true;
     updatedAt?: true;
     san?: true;
@@ -94,7 +94,7 @@ export type MoveMaxAggregateInputType = {
     comments?: true;
     before?: true;
     after?: true;
-    timetake?: true;
+    timeTaken?: true;
     createdAt?: true;
     updatedAt?: true;
     san?: true;
@@ -108,7 +108,7 @@ export type MoveCountAggregateInputType = {
     comments?: true;
     before?: true;
     after?: true;
-    timetake?: true;
+    timeTaken?: true;
     createdAt?: true;
     updatedAt?: true;
     san?: true;
@@ -199,7 +199,7 @@ export type MoveGroupByOutputType = {
     comments: string | null;
     before: string;
     after: string;
-    timetake: number | null;
+    timeTaken: number | null;
     createdAt: Date;
     updatedAt: Date;
     san: string | null;
@@ -224,7 +224,7 @@ export type MoveWhereInput = {
     comments?: Prisma.StringNullableFilter<"Move"> | string | null;
     before?: Prisma.StringFilter<"Move"> | string;
     after?: Prisma.StringFilter<"Move"> | string;
-    timetake?: Prisma.IntNullableFilter<"Move"> | number | null;
+    timeTaken?: Prisma.IntNullableFilter<"Move"> | number | null;
     createdAt?: Prisma.DateTimeFilter<"Move"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Move"> | Date | string;
     san?: Prisma.StringNullableFilter<"Move"> | string | null;
@@ -239,7 +239,7 @@ export type MoveOrderByWithRelationInput = {
     comments?: Prisma.SortOrderInput | Prisma.SortOrder;
     before?: Prisma.SortOrder;
     after?: Prisma.SortOrder;
-    timetake?: Prisma.SortOrderInput | Prisma.SortOrder;
+    timeTaken?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     san?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -257,7 +257,7 @@ export type MoveWhereUniqueInput = Prisma.AtLeast<{
     comments?: Prisma.StringNullableFilter<"Move"> | string | null;
     before?: Prisma.StringFilter<"Move"> | string;
     after?: Prisma.StringFilter<"Move"> | string;
-    timetake?: Prisma.IntNullableFilter<"Move"> | number | null;
+    timeTaken?: Prisma.IntNullableFilter<"Move"> | number | null;
     createdAt?: Prisma.DateTimeFilter<"Move"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Move"> | Date | string;
     san?: Prisma.StringNullableFilter<"Move"> | string | null;
@@ -272,7 +272,7 @@ export type MoveOrderByWithAggregationInput = {
     comments?: Prisma.SortOrderInput | Prisma.SortOrder;
     before?: Prisma.SortOrder;
     after?: Prisma.SortOrder;
-    timetake?: Prisma.SortOrderInput | Prisma.SortOrder;
+    timeTaken?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     san?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -294,7 +294,7 @@ export type MoveScalarWhereWithAggregatesInput = {
     comments?: Prisma.StringNullableWithAggregatesFilter<"Move"> | string | null;
     before?: Prisma.StringWithAggregatesFilter<"Move"> | string;
     after?: Prisma.StringWithAggregatesFilter<"Move"> | string;
-    timetake?: Prisma.IntNullableWithAggregatesFilter<"Move"> | number | null;
+    timeTaken?: Prisma.IntNullableWithAggregatesFilter<"Move"> | number | null;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Move"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Move"> | Date | string;
     san?: Prisma.StringNullableWithAggregatesFilter<"Move"> | string | null;
@@ -307,7 +307,7 @@ export type MoveCreateInput = {
     comments?: string | null;
     before: string;
     after: string;
-    timetake?: number | null;
+    timeTaken?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     san?: string | null;
@@ -322,7 +322,7 @@ export type MoveUncheckedCreateInput = {
     comments?: string | null;
     before: string;
     after: string;
-    timetake?: number | null;
+    timeTaken?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     san?: string | null;
@@ -335,7 +335,7 @@ export type MoveUpdateInput = {
     comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     before?: Prisma.StringFieldUpdateOperationsInput | string;
     after?: Prisma.StringFieldUpdateOperationsInput | string;
-    timetake?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    timeTaken?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     san?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -350,7 +350,7 @@ export type MoveUncheckedUpdateInput = {
     comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     before?: Prisma.StringFieldUpdateOperationsInput | string;
     after?: Prisma.StringFieldUpdateOperationsInput | string;
-    timetake?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    timeTaken?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     san?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -364,7 +364,7 @@ export type MoveCreateManyInput = {
     comments?: string | null;
     before: string;
     after: string;
-    timetake?: number | null;
+    timeTaken?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     san?: string | null;
@@ -377,7 +377,7 @@ export type MoveUpdateManyMutationInput = {
     comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     before?: Prisma.StringFieldUpdateOperationsInput | string;
     after?: Prisma.StringFieldUpdateOperationsInput | string;
-    timetake?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    timeTaken?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     san?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -391,7 +391,7 @@ export type MoveUncheckedUpdateManyInput = {
     comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     before?: Prisma.StringFieldUpdateOperationsInput | string;
     after?: Prisma.StringFieldUpdateOperationsInput | string;
-    timetake?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    timeTaken?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     san?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -413,14 +413,14 @@ export type MoveCountOrderByAggregateInput = {
     comments?: Prisma.SortOrder;
     before?: Prisma.SortOrder;
     after?: Prisma.SortOrder;
-    timetake?: Prisma.SortOrder;
+    timeTaken?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     san?: Prisma.SortOrder;
 };
 export type MoveAvgOrderByAggregateInput = {
     moveNumber?: Prisma.SortOrder;
-    timetake?: Prisma.SortOrder;
+    timeTaken?: Prisma.SortOrder;
 };
 export type MoveMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
@@ -431,7 +431,7 @@ export type MoveMaxOrderByAggregateInput = {
     comments?: Prisma.SortOrder;
     before?: Prisma.SortOrder;
     after?: Prisma.SortOrder;
-    timetake?: Prisma.SortOrder;
+    timeTaken?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     san?: Prisma.SortOrder;
@@ -445,14 +445,14 @@ export type MoveMinOrderByAggregateInput = {
     comments?: Prisma.SortOrder;
     before?: Prisma.SortOrder;
     after?: Prisma.SortOrder;
-    timetake?: Prisma.SortOrder;
+    timeTaken?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     san?: Prisma.SortOrder;
 };
 export type MoveSumOrderByAggregateInput = {
     moveNumber?: Prisma.SortOrder;
-    timetake?: Prisma.SortOrder;
+    timeTaken?: Prisma.SortOrder;
 };
 export type MoveCreateNestedManyWithoutGameInput = {
     create?: Prisma.XOR<Prisma.MoveCreateWithoutGameInput, Prisma.MoveUncheckedCreateWithoutGameInput> | Prisma.MoveCreateWithoutGameInput[] | Prisma.MoveUncheckedCreateWithoutGameInput[];
@@ -507,7 +507,7 @@ export type MoveCreateWithoutGameInput = {
     comments?: string | null;
     before: string;
     after: string;
-    timetake?: number | null;
+    timeTaken?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     san?: string | null;
@@ -520,7 +520,7 @@ export type MoveUncheckedCreateWithoutGameInput = {
     comments?: string | null;
     before: string;
     after: string;
-    timetake?: number | null;
+    timeTaken?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     san?: string | null;
@@ -558,7 +558,7 @@ export type MoveScalarWhereInput = {
     comments?: Prisma.StringNullableFilter<"Move"> | string | null;
     before?: Prisma.StringFilter<"Move"> | string;
     after?: Prisma.StringFilter<"Move"> | string;
-    timetake?: Prisma.IntNullableFilter<"Move"> | number | null;
+    timeTaken?: Prisma.IntNullableFilter<"Move"> | number | null;
     createdAt?: Prisma.DateTimeFilter<"Move"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Move"> | Date | string;
     san?: Prisma.StringNullableFilter<"Move"> | string | null;
@@ -571,7 +571,7 @@ export type MoveCreateManyGameInput = {
     comments?: string | null;
     before: string;
     after: string;
-    timetake?: number | null;
+    timeTaken?: number | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     san?: string | null;
@@ -584,7 +584,7 @@ export type MoveUpdateWithoutGameInput = {
     comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     before?: Prisma.StringFieldUpdateOperationsInput | string;
     after?: Prisma.StringFieldUpdateOperationsInput | string;
-    timetake?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    timeTaken?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     san?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -597,7 +597,7 @@ export type MoveUncheckedUpdateWithoutGameInput = {
     comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     before?: Prisma.StringFieldUpdateOperationsInput | string;
     after?: Prisma.StringFieldUpdateOperationsInput | string;
-    timetake?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    timeTaken?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     san?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -610,7 +610,7 @@ export type MoveUncheckedUpdateManyWithoutGameInput = {
     comments?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     before?: Prisma.StringFieldUpdateOperationsInput | string;
     after?: Prisma.StringFieldUpdateOperationsInput | string;
-    timetake?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
+    timeTaken?: Prisma.NullableIntFieldUpdateOperationsInput | number | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     san?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
@@ -624,7 +624,7 @@ export type MoveSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     comments?: boolean;
     before?: boolean;
     after?: boolean;
-    timetake?: boolean;
+    timeTaken?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     san?: boolean;
@@ -639,7 +639,7 @@ export type MoveSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     comments?: boolean;
     before?: boolean;
     after?: boolean;
-    timetake?: boolean;
+    timeTaken?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     san?: boolean;
@@ -654,7 +654,7 @@ export type MoveSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     comments?: boolean;
     before?: boolean;
     after?: boolean;
-    timetake?: boolean;
+    timeTaken?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     san?: boolean;
@@ -669,12 +669,12 @@ export type MoveSelectScalar = {
     comments?: boolean;
     before?: boolean;
     after?: boolean;
-    timetake?: boolean;
+    timeTaken?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     san?: boolean;
 };
-export type MoveOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gameId" | "moveNumber" | "from" | "to" | "comments" | "before" | "after" | "timetake" | "createdAt" | "updatedAt" | "san", ExtArgs["result"]["move"]>;
+export type MoveOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "gameId" | "moveNumber" | "from" | "to" | "comments" | "before" | "after" | "timeTaken" | "createdAt" | "updatedAt" | "san", ExtArgs["result"]["move"]>;
 export type MoveInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     game?: boolean | Prisma.GameDefaultArgs<ExtArgs>;
 };
@@ -698,7 +698,7 @@ export type $MovePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         comments: string | null;
         before: string;
         after: string;
-        timetake: number | null;
+        timeTaken: number | null;
         createdAt: Date;
         updatedAt: Date;
         san: string | null;
@@ -1065,7 +1065,7 @@ export interface MoveFieldRefs {
     readonly comments: Prisma.FieldRef<"Move", 'String'>;
     readonly before: Prisma.FieldRef<"Move", 'String'>;
     readonly after: Prisma.FieldRef<"Move", 'String'>;
-    readonly timetake: Prisma.FieldRef<"Move", 'Int'>;
+    readonly timeTaken: Prisma.FieldRef<"Move", 'Int'>;
     readonly createdAt: Prisma.FieldRef<"Move", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Move", 'DateTime'>;
     readonly san: Prisma.FieldRef<"Move", 'String'>;

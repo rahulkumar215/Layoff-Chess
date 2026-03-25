@@ -74,7 +74,7 @@ export declare const MoveScalarFieldEnum: {
     readonly comments: "comments";
     readonly before: "before";
     readonly after: "after";
-    readonly timetake: "timetake";
+    readonly timeTaken: "timeTaken";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
     readonly san: "san";

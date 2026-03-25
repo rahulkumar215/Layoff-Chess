@@ -1,11 +1,8 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-} from "@clerk/clerk-react";
-import { Link, Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { NavigationProgress } from "@/components/navigation-progress";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createRootRoute({
   component: RootComponent,
@@ -14,34 +11,15 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <>
-      <SignedOut>
-        <SignInButton />
-        <SignUpButton />
-      </SignedOut>
-      <SignedIn>
-        <div className="p-2 flex gap-2 text-lg">
-          <Link
-            to="/"
-            activeProps={{
-              className: "font-bold",
-            }}
-            activeOptions={{ exact: true }}
-          >
-            Home
-          </Link>{" "}
-          <Link
-            to="/about"
-            activeProps={{
-              className: "font-bold",
-            }}
-          >
-            About
-          </Link>
-        </div>
-        <hr />
-        <Outlet />
-      </SignedIn>
-      <TanStackRouterDevtools position="bottom-right" />
+      <Toaster />
+      <NavigationProgress />
+      <Outlet />
+      {import.meta.env.MODE === "development" && (
+        <>
+          <TanStackRouterDevtools position="bottom-right" />
+          <ReactQueryDevtools buttonPosition="bottom-left" />
+        </>
+      )}
     </>
   );
 }

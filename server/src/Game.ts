@@ -196,40 +196,53 @@ export class Game {
   }
 
   async addMoveToDb(move: Move, moveTimestamp: Date) {
-    await prisma.$transaction([
-      prisma.move.create({
-        data: {
-          gameId: this.gameId,
-          moveNumber: this.moveCount + 1,
-          from: move.from,
-          to: move.to,
-          before: move.before,
-          after: move.after,
-          createdAt: moveTimestamp,
-          timeTaken: moveTimestamp.getTime() - this.lastMoveTime.getTime(),
-          san: move.san,
-        },
-      }),
-      prisma.game.update({
-        data: {
-          currentFen: move.after,
-        },
-        where: {
-          id: this.gameId,
-        },
-      }),
-    ]);
+    await prisma.$transaction(
+      async (tx) => {
+        await tx.move.create({
+          data: {
+            gameId: this.gameId,
+            moveNumber: this.moveCount + 1,
+            from: move.from,
+            to: move.to,
+            before: move.before,
+            after: move.after,
+            createdAt: moveTimestamp,
+            timeTaken: moveTimestamp.getTime() - this.lastMoveTime.getTime(),
+            san: move.san,
+          },
+        });
+        await tx.game.update({
+          data: {
+            currentFen: move.after,
+          },
+          where: {
+            id: this.gameId,
+          },
+        });
+      },
+      {
+        timeout: 10000,
+        maxWait: 5000,
+      },
+    );
   }
 
   async makeMove(user: User, move: Move) {
+    console.log(
+      this.board.turn() === "w" && user.userId !== this.player1UserId,
+    );
     if (this.board.turn() === "w" && user.userId !== this.player1UserId) {
       return;
     }
 
+    console.log(
+      this.board.turn() === "b" && user.userId !== this.player2UserId,
+    );
     if (this.board.turn() === "b" && user.userId !== this.player2UserId) {
       return;
     }
 
+    console.log(this.result);
     if (this.result) {
       console.error(
         `User ${user.userId} is making a move post game completion`,
@@ -264,8 +277,8 @@ export class Game {
     }
 
     if (this.board.turn() === "w") {
-      this.player1TimeConsumed =
-        this.player1TimeConsumed +
+      this.player2TimeConsumed =
+        this.player2TimeConsumed +
         (moveTimestamp.getTime() - this.lastMoveTime.getTime());
     }
 
@@ -287,6 +300,7 @@ export class Game {
       }),
     );
 
+    console.log(this.board.isGameOver());
     if (this.board.isGameOver()) {
       const result = this.board.isDraw()
         ? "DRAW"
@@ -311,7 +325,7 @@ export class Game {
   }
 
   getPlayer2TimeConsumed() {
-    if (this.board.turn() === "w") {
+    if (this.board.turn() === "b") {
       return (
         this.player2TimeConsumed +
         (new Date(Date.now()).getTime() - this.lastMoveTime.getTime())

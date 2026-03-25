@@ -6,6 +6,9 @@ declare const appConfig: Readonly<{
     CLERK_WEBHOOK_SIGNING_SECRET: string;
     PUBLISHABLE_KEY: string;
     CLERK_SECRET_KEY: string;
+    JWT_SECRET: string;
+    JWT_EXPIRES_IN: string;
+    AUTH_REDIRECT_URL: string;
 }>;
 export default appConfig;
 //# sourceMappingURL=appConfig.d.ts.map

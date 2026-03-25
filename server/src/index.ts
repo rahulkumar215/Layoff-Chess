@@ -5,6 +5,7 @@ import { WebSocketServer } from "ws";
 import url from "url";
 import { extractAuthUser } from "./SocketManager.js";
 import { GameManger } from "./GameManager.js";
+import { prisma } from "./config/prisma.js";
 
 const { PORT } = appConfig;
 
@@ -51,7 +52,7 @@ wss.on("connection", (ws, req) => {
 // const server = app.listen(PORT, () => {
 //   console.log(`✅ Server running on http://localhost:${PORT}`);
 // });
-
+prisma.$connect().then(() => console.log("Database connected"));
 server.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
 });

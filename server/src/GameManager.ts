@@ -86,10 +86,10 @@ export class GameManger {
       }
 
       if (message.type === MOVE) {
-        const gameId = message.playload.gameId;
+        const gameId = message.payload.gameId;
         const game = this.games.find((game) => game.gameId === gameId);
         if (game) {
-          game.makeMove(user, message.playload.move);
+          game.makeMove(user, message.payload.move);
           if (game.result) {
             this.removeGame(game.gameId);
           }
@@ -97,7 +97,7 @@ export class GameManger {
       }
 
       if (message.type === EXIT_GAME) {
-        const gameId = message.playload.gameId;
+        const gameId = message.payload.gameId;
         const game = this.games.find((game) => game.gameId === gameId);
 
         if (game) {
