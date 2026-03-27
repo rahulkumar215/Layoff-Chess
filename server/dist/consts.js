@@ -1,4 +1,4 @@
-export const COOKIE_MAX_AGE = 24 * 60 * 60 * 1000;
+export const COOKIE_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 export const INIT_GAME = "init_game";
 export const MOVE = "move";
 export const GAME_OVER = "game_over";

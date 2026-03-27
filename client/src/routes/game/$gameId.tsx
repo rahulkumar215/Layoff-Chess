@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useSocket } from "@/hooks/useSocket";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Chess, Move, type Square } from "chess.js";
+import { Chess, Move, type PieceSymbol, type Square } from "chess.js";
 import {
   GAME_ADDED,
   GAME_ENDED,
@@ -16,7 +16,10 @@ import {
 } from "@/consts/consts";
 import {
   Chessboard,
+  chessColumnToColumnIndex,
+  defaultPieces,
   type PieceDropHandlerArgs,
+  type PieceRenderObject,
   type SquareHandlerArgs,
 } from "react-chessboard";
 import { toast } from "sonner";
@@ -42,6 +45,10 @@ function RouteComponent() {
   const [started, setStarted] = useState(false);
   const [myPlayerColor, setMyPlayerColor] = useState<"w" | "b">("w");
   const [gameMetadata, setGameMetadata] = useState<Metadata | null>(null);
+  const [promotionMove, setPromotionMove] = useState<Omit<
+    PieceDropHandlerArgs,
+    "piece"
+  > | null>(null);
   const user = useUserStore((state) => state.user);
 
   // set the chessboard options
@@ -80,7 +87,7 @@ function RouteComponent() {
     }
 
     return chess
-      .history({ verbose: true })
+      .moves({ square: from, verbose: true })
       .map((it) => it.to)
       .includes(to);
   }
@@ -92,68 +99,78 @@ function RouteComponent() {
       return false;
     }
 
-    // try to make the move according to chess.js logic
     try {
-      // update the position state upon successful move to trigger a re-render of the chessboard
-      // ws.send(
-      //   JSON.stringify({
-      //     type: "move",
-      //     position: chessGame.fen(),
-      //   }),
-      // );
+      let moveResult: Move;
 
-      try {
-        let moveResult: Move;
-
-        if (
-          isPromoting(chessGame, sourceSquare as Square, targetSquare as Square)
-        ) {
-          moveResult = chessGame.move({
-            from: sourceSquare,
-            to: targetSquare,
-            promotion: "q", // always promote to a queen for example simplicity
-          });
-        } else {
-          moveResult = chessGame.move({
-            from: sourceSquare,
-            to: targetSquare,
-          });
-        }
-
-        setChessPosition(chessGame.fen());
-
-        if (moveResult) {
-          socket.send(
-            JSON.stringify({
-              type: MOVE,
-              payload: {
-                gameId,
-                move: moveResult,
-              },
-            }),
-          );
-        }
-      } catch (e) {
-        console.log("e", e);
+      if (
+        isPromoting(chessGame, sourceSquare as Square, targetSquare as Square)
+      ) {
+        setPromotionMove({
+          sourceSquare,
+          targetSquare,
+        });
+        return;
+      } else {
+        moveResult = chessGame.move({
+          from: sourceSquare,
+          to: targetSquare,
+        });
       }
-      // make random cpu move after a short delay
+      setChessPosition((prev) => chessGame.fen());
 
-      // return true as the move was successful
+      if (moveResult) {
+        socket.send(
+          JSON.stringify({
+            type: MOVE,
+            payload: {
+              gameId,
+              move: moveResult,
+            },
+          }),
+        );
+      }
+
       return true;
-    } catch {
-      // return false as the move was not successful
+    } catch (e) {
+      console.error("e", e);
       return false;
     }
   }
 
+  // handle promotion piece select
+  function onPromotionPieceSelect(piece: PieceSymbol) {
+    try {
+      const moveResult = chessGame.move({
+        from: promotionMove!.sourceSquare,
+        to: promotionMove!.targetSquare as Square,
+        promotion: piece,
+      });
+      setChessPosition(chessGame.fen());
+      if (moveResult) {
+        socket.send(
+          JSON.stringify({
+            type: MOVE,
+            payload: {
+              gameId,
+              move: moveResult,
+            },
+          }),
+        );
+      }
+    } catch (err) {
+      // do nothing
+      console.error(err);
+    }
+
+    // reset the promotion move to clear the promotion dialog
+    setPromotionMove(null);
+  }
+
   function getMoveOptions(square: Square) {
-    console.log(square);
     const moves = chessGame.moves({
       square,
       verbose: true,
     });
-
-    console.log(moves);
 
     if (moves.length === 0) {
       setOptionSquares({});
@@ -177,14 +194,12 @@ function RouteComponent() {
     newSquares[square] = {
       background: "rgba(255, 255, 0, 0.4)",
     };
-    console.log(newSquares);
     setOptionSquares(newSquares);
 
     return true;
   }
 
   function onSquareClick({ square, piece }: SquareHandlerArgs) {
-    console.log("Sqaure and Piece ", square, piece);
     if (!moveFrom && piece) {
       const hasMoveOptions = getMoveOptions(square as Square);
 
@@ -200,14 +215,8 @@ function RouteComponent() {
       verbose: true,
     });
 
-    console.log("Pre Moves ", moves);
-    console.log(moveFrom, square);
-
     // finding played moves from playble moves by comparing previously clicked square and current clicked square
     const foundMove = moves.find((m) => m.from === moveFrom && m.to === square);
-
-    console.log("Moves ", moves);
-    console.log("Found Move ", foundMove);
 
     if (!foundMove) {
       const hasMoveOptions = getMoveOptions(square as Square);
@@ -218,23 +227,42 @@ function RouteComponent() {
     }
 
     try {
-      chessGame.move({
-        from: moveFrom,
-        to: square,
-        promotion: "q",
-      });
-    } catch {
-      const hasMoveOptions = getMoveOptions(square as Square);
+      let moveResult: Move;
 
+      if (isPromoting(chessGame, moveFrom as Square, square as Square)) {
+        setPromotionMove({
+          targetSquare: moveFrom,
+          sourceSquare: square,
+        });
+        return;
+      } else {
+        moveResult = chessGame.move({
+          from: moveFrom,
+          to: square,
+        });
+      }
+
+      setChessPosition(chessGame.fen());
+
+      if (moveResult) {
+        socket.send(
+          JSON.stringify({
+            type: MOVE,
+            payload: {
+              gameId,
+              move: moveResult,
+            },
+          }),
+        );
+      }
+    } catch (e) {
+      console.error("e", e);
+      const hasMoveOptions = getMoveOptions(square as Square);
       if (hasMoveOptions) {
         setMoveFrom(square);
       }
-
       return;
     }
-
-    setChessPosition(chessGame.fen());
-
     setMoveFrom("");
     setOptionSquares({});
   }
@@ -274,7 +302,7 @@ function RouteComponent() {
               chessGame.move({
                 from: move.from,
                 to: move.to,
-                promotion: "q",
+                promotion: move.promotion || "q",
               });
             } else {
               chessGame.move({ from: move.from, to: move.to });
@@ -318,18 +346,16 @@ function RouteComponent() {
           setMyPlayerColor(
             message.payload.whitePlayer.id === user?.id ? "w" : "b",
           );
-          console.error(message.payload);
           setStarted(true);
 
           message.payload.moves.map((x: Move) => {
             if (isPromoting(chessGame, x.from, x.to)) {
-              chessGame.move({ ...x, promotion: "q" });
+              chessGame.move({ ...x, promotion: x.promotion || "q" });
             } else {
               chessGame.move(x);
             }
           });
           setChessPosition(chessGame.fen());
-
           break;
         default:
           toast.error(message.payload.message);
@@ -349,9 +375,100 @@ function RouteComponent() {
     }
   }, [chessGame, navigate, socket, gameId]);
 
+  // calculate the left position of the promotion square
+  const squareWidth =
+    document
+      .querySelector(`[data-column="a"][data-row="1"]`)
+      ?.getBoundingClientRect()?.width ?? 0;
+  const promotionSquareLeft = promotionMove?.targetSquare
+    ? squareWidth *
+      chessColumnToColumnIndex(
+        promotionMove.targetSquare.match(/^[a-z]+/)?.[0] ?? "",
+        8,
+        // number of columns
+        myPlayerColor === "w" ? "white" : "black", // board orientation
+      )
+    : 0;
+
   return (
     <div className="grid grid-cols-[1fr_1fr] gap-4 p-4 ">
-      <Chessboard options={chessboardOptions} />
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+          alignItems: "center",
+        }}
+      >
+        <div
+          style={{
+            position: "relative",
+          }}
+        >
+          {promotionMove ? (
+            <div
+              onClick={() => setPromotionMove(null)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                setPromotionMove(null);
+              }}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                zIndex: 1000,
+              }}
+            />
+          ) : null}
+
+          {promotionMove ? (
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: promotionSquareLeft,
+                backgroundColor: "white",
+                width: squareWidth,
+                zIndex: 1001,
+                display: "flex",
+                flexDirection: "column",
+                boxShadow: "0 0 10px 0 rgba(0, 0, 0, 0.5)",
+              }}
+            >
+              {(["q", "r", "n", "b"] as PieceSymbol[]).map((piece) => (
+                <button
+                  key={piece}
+                  onClick={() => {
+                    onPromotionPieceSelect(piece);
+                  }}
+                  onContextMenu={(e) => {
+                    e.preventDefault();
+                  }}
+                  style={{
+                    width: "100%",
+                    aspectRatio: "1",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: 0,
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                  {defaultPieces[
+                    `${myPlayerColor}${piece.toUpperCase()}` as keyof PieceRenderObject
+                  ]()}
+                </button>
+              ))}
+            </div>
+          ) : null}
+
+          <Chessboard options={chessboardOptions} />
+        </div>
+      </div>
 
       <div className="flex flex-col gap-4">
         {gameId === "random" && !started && (

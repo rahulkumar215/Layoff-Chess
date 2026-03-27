@@ -24,6 +24,7 @@ export declare class Game {
         moveNumber: number;
         from: string;
         to: string;
+        promotion?: string;
         comments: string | null;
         timeTaken: number | null;
         createdAt: Date;

@@ -55,7 +55,7 @@ export class Game {
                 this.board.move({
                     from: move.from,
                     to: move.to,
-                    promotion: "q",
+                    promotion: move.promotion || "q",
                 });
             }
             else {
@@ -181,15 +181,13 @@ export class Game {
         });
     }
     async makeMove(user, move) {
-        console.log(this.board.turn() === "w" && user.userId !== this.player1UserId);
+        console.log(move);
         if (this.board.turn() === "w" && user.userId !== this.player1UserId) {
             return;
         }
-        console.log(this.board.turn() === "b" && user.userId !== this.player2UserId);
         if (this.board.turn() === "b" && user.userId !== this.player2UserId) {
             return;
         }
-        console.log(this.result);
         if (this.result) {
             console.error(`User ${user.userId} is making a move post game completion`);
             return;
@@ -200,7 +198,7 @@ export class Game {
                 this.board.move({
                     from: move.from,
                     to: move.to,
-                    promotion: "q",
+                    promotion: move?.promotion || "q",
                 });
             }
             else {

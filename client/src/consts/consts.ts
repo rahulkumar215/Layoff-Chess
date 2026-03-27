@@ -10,7 +10,7 @@ export const USER_TIMEOUT = "user_timeout";
 export const GAME_TIME = "game_time";
 export const GAME_ENDED = "game_ended";
 export const EXIT_GAME = "exit_game";
-const GAME_TIME_MS = 10 * 60 * 1000;
+export const GAME_TIME_MS = 10 * 60 * 1000;
 
 export enum Result {
   WHITE_WINS = "WHITE_WINS",
