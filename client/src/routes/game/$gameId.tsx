@@ -8,6 +8,8 @@ import {
   GAME_ENDED,
   GAME_JOINED,
   GAME_OVER,
+  GAME_TIME,
+  GAME_TIME_MS,
   INIT_GAME,
   JOIN_ROOM,
   MOVE,
@@ -23,7 +25,16 @@ import {
   type SquareHandlerArgs,
 } from "react-chessboard";
 import { toast } from "sonner";
-import { User } from "lucide-react";
+import {
+  ChevronFirst,
+  ChevronLast,
+  ChevronLeft,
+  ChevronRight,
+  FlagIcon,
+  HandshakeIcon,
+  RefreshCw,
+  User,
+} from "lucide-react";
 import { cx } from "class-variance-authority";
 import { useUserStore } from "@/store/auth-store";
 
@@ -50,6 +61,19 @@ function RouteComponent() {
     "piece"
   > | null>(null);
   const user = useUserStore((state) => state.user);
+  const [player1TimeConsumed, setPlayer1TimeConsumed] = useState(0);
+  const [player2TimeConsumed, setPlayer2TimeConsumed] = useState(0);
+  const [userSelectedMoveIndex, setUserSelectedMoveIndex] = useState<
+    number | null
+  >(null);
+  const userSelectedMoveIndexRef = useRef(userSelectedMoveIndex);
+  const [moves, setMoves] = useState<Move[]>([]);
+  const movesArray = moves.reduce((result, _, index: number, array: Move[]) => {
+    if (index % 2 === 0) {
+      result.push(array.slice(index, index + 2));
+    }
+    return result;
+  }, [] as Move[][]);
 
   // set the chessboard options
   const chessboardOptions = {
@@ -66,6 +90,39 @@ function RouteComponent() {
     allowDrawingArrows: true,
     id: "play-vs-random",
   };
+
+  useEffect(() => {
+    userSelectedMoveIndexRef.current = userSelectedMoveIndex;
+  }, [userSelectedMoveIndex]);
+
+  useEffect(() => {
+    if (userSelectedMoveIndex !== null) {
+      const move = moves[userSelectedMoveIndex];
+      // setLastMove({
+      //   from: move.from,
+      //   to: move.to,
+      // });
+      chessGame.load(move.after);
+      // setBoard(chess.board());
+      setChessPosition(chessGame.fen());
+      return;
+    }
+  }, [userSelectedMoveIndex]);
+
+  useEffect(() => {
+    if (userSelectedMoveIndex !== null) {
+      chessGame.reset();
+      moves.forEach((move) => {
+        chessGame.move({ from: move.from, to: move.to });
+      });
+      // setBoard(chess.board());
+      setChessPosition(chessGame.fen());
+      setUserSelectedMoveIndex(null);
+    } else {
+      // setBoard(chess.board());
+      setChessPosition(chessGame.fen());
+    }
+  }, [moves]);
 
   function isPromoting(chess: Chess, from: Square, to: Square) {
     if (!from) {
@@ -296,7 +353,14 @@ function RouteComponent() {
           );
           break;
         case MOVE: {
-          const { move } = message.payload;
+          const { move, player1TimeConsumed, player2TimeConsumed } =
+            message.payload;
+          setPlayer1TimeConsumed(player1TimeConsumed);
+          setPlayer2TimeConsumed(player2TimeConsumed);
+          if (userSelectedMoveIndexRef.current !== null) {
+            setMoves((moves) => [...moves, move]);
+            return;
+          }
           try {
             if (isPromoting(chessGame, move.from, move.to)) {
               chessGame.move({
@@ -308,6 +372,7 @@ function RouteComponent() {
               chessGame.move({ from: move.from, to: move.to });
             }
             setChessPosition(chessGame.fen());
+            setMoves((moves) => [...moves, move]);
           } catch (err) {
             console.error(err);
           }
@@ -343,6 +408,8 @@ function RouteComponent() {
             blackPlayer: message.payload.blackPlayer,
             whitePlayer: message.payload.whitePlayer,
           });
+          setPlayer1TimeConsumed(player1TimeConsumed);
+          setPlayer2TimeConsumed(player2TimeConsumed);
           setMyPlayerColor(
             message.payload.whitePlayer.id === user?.id ? "w" : "b",
           );
@@ -355,7 +422,14 @@ function RouteComponent() {
               chessGame.move(x);
             }
           });
+
           setChessPosition(chessGame.fen());
+          setMoves(message.payload.moves);
+          break;
+
+        case GAME_TIME:
+          setPlayer1TimeConsumed(player1TimeConsumed);
+          setPlayer2TimeConsumed(player2TimeConsumed);
           break;
         default:
           toast.error(message.payload.message);
@@ -375,6 +449,19 @@ function RouteComponent() {
     }
   }, [chessGame, navigate, socket, gameId]);
 
+  useEffect(() => {
+    if (started) {
+      const interval = setInterval(() => {
+        if (chessGame.turn() === "w") {
+          setPlayer1TimeConsumed((p) => p + 100);
+        } else {
+          setPlayer2TimeConsumed((p) => p + 100);
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [started, gameMetadata, user, chessGame]);
+
   // calculate the left position of the promotion square
   const squareWidth =
     document
@@ -389,6 +476,20 @@ function RouteComponent() {
         myPlayerColor === "w" ? "white" : "black", // board orientation
       )
     : 0;
+
+  const getTimer = (timeConsumed: number) => {
+    const timeLeftMs = GAME_TIME_MS - timeConsumed;
+    const minutes = Math.floor(timeLeftMs / (1000 * 60));
+    const remainingSeconds = Math.floor((timeLeftMs % (1000 * 60)) / 1000);
+
+    return (
+      <div className="text-white">
+        Time Left : {minutes < 10 ? "0" : ""}
+        {minutes} : {remainingSeconds < 10 ? "0" : ""}
+        {remainingSeconds}
+      </div>
+    );
+  };
 
   return (
     <div className="grid grid-cols-[1fr_1fr] gap-4 p-4 ">
@@ -487,32 +588,152 @@ function RouteComponent() {
         )}
 
         {started && gameMetadata && (
-          <div className="flex  gap-2 items-center justify-center border-2 border-gray-600 bg-blue-600 p-4 rounded-md">
-            <div
-              className={cx(
-                "flex items-center justify-center gap-2 bg-white text-black p-2 rounded-md transition-all duration-300 ease-in border-3 border-black",
-                myPlayerColor === "w" &&
-                  chessGame.turn() === "w" &&
-                  "border-lime-600",
-              )}
-            >
-              <User />
-              {gameMetadata?.whitePlayer.name}
+          <div>
+            <div className="flex  gap-2 items-center justify-center border-2 border-gray-600 bg-blue-600 p-4 rounded-md">
+              <div className="flex flex-col">
+                <div
+                  className={cx(
+                    "flex items-center justify-center gap-2 bg-white text-black p-2 rounded-md transition-all duration-300 ease-in border-3 border-black",
+                    myPlayerColor === "w" &&
+                      chessGame.turn() === "w" &&
+                      "border-lime-600",
+                  )}
+                >
+                  <User />
+                  {gameMetadata?.whitePlayer.name}
+                </div>
+                {getTimer(player1TimeConsumed)}
+              </div>
+              V/S
+              <div className="flex flex-col">
+                <div
+                  className={cx(
+                    "flex items-center justify-center gap-2 bg-black text-white p-2 rounded-md transition-all duration-300 ease-in border-3 border-black",
+                    myPlayerColor === "b" &&
+                      chessGame.turn() === "b" &&
+                      "border-lime-600",
+                  )}
+                >
+                  <User />
+                  {gameMetadata?.blackPlayer.name}
+                </div>
+                {getTimer(player2TimeConsumed)}
+              </div>
             </div>
-            V/S
-            <div
-              className={cx(
-                "flex items-center justify-center gap-2 bg-black text-white p-2 rounded-md transition-all duration-300 ease-in border-3 border-black",
-                myPlayerColor === "b" &&
-                  chessGame.turn() === "b" &&
-                  "border-lime-600",
-              )}
-            >
-              <User />
-              {gameMetadata?.blackPlayer.name}
-            </div>
+
+            {myPlayerColor === chessGame.turn()
+              ? "Your Turn"
+              : "Opponent's Turn"}
           </div>
         )}
+
+        {movesArray.map((movePairs, index) => {
+          return (
+            <div
+              key={index}
+              className={`w-full py-px px-4 font-bold items-stretch ${index % 2 !== 0 ? "bg-[#2B2927]" : ""}`}
+            >
+              <div className="grid grid-cols-6 gap-16 w-4/5">
+                <span className="text-[#C3C3C0] px-2 py-1.5">{`${index + 1}.`}</span>
+
+                {movePairs.map((move, movePairIndex) => {
+                  const isLastIndex =
+                    movePairIndex === movePairs.length - 1 &&
+                    movesArray.length - 1 === index;
+                  const isHighlighted =
+                    userSelectedMoveIndex !== null
+                      ? userSelectedMoveIndex === index * 2 + movePairIndex
+                      : isLastIndex;
+                  const { san } = move;
+
+                  return (
+                    <div
+                      key={movePairIndex}
+                      className={`col-span-2 cursor-pointer flex items-center w-full pl-1 ${isHighlighted ? "bg-[#484644] rounded border-b-[#5A5858] border-b-[3px]" : ""}`}
+                      onClick={() => {
+                        setUserSelectedMoveIndex(index * 2 + movePairIndex);
+                      }}
+                    >
+                      <span className="text-[#C3C3C0]">{san}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+
+        {moves.length ? (
+          <div className="w-full p-2 bg-[#20211D] flex items-center justify-between">
+            <div className="flex gap-4">
+              <button className="flex items-center gap-2 hover:bg-[#32302E] rounded px-2.5 py-1">
+                {<HandshakeIcon size={16} />}
+                Draw
+              </button>
+              <button className="flex items-center gap-2 hover:bg-[#32302E] rounded px-2.5 py-1">
+                {<FlagIcon size={16} />}
+                Resign
+              </button>
+            </div>
+            <div className="flex gap-1">
+              <button
+                onClick={() => {
+                  setUserSelectedMoveIndex(0);
+                }}
+                disabled={userSelectedMoveIndex === 0}
+                className="hover:text-white"
+                title="Go to first move"
+              >
+                <ChevronFirst />
+              </button>
+
+              <button
+                onClick={() => {
+                  setUserSelectedMoveIndex((prev) =>
+                    prev !== null ? prev - 1 : moves.length - 2,
+                  );
+                }}
+                disabled={userSelectedMoveIndex === 0}
+                className="hover:text-white"
+              >
+                <ChevronLeft />
+              </button>
+              <button
+                onClick={() => {
+                  setUserSelectedMoveIndex((prev) =>
+                    prev !== null
+                      ? prev + 1 >= moves.length - 1
+                        ? moves.length - 1
+                        : prev + 1
+                      : null,
+                  );
+                }}
+                disabled={userSelectedMoveIndex === null}
+                className="hover:text-white"
+              >
+                <ChevronRight />
+              </button>
+              <button
+                onClick={() => {
+                  setUserSelectedMoveIndex(moves.length - 1);
+                }}
+                disabled={userSelectedMoveIndex === null}
+                className="hover:text-white"
+                title="Go to last move"
+              >
+                <ChevronLast />
+              </button>
+              <button
+                // onClick={() => {
+                //   setIsFlipped((prev) => !prev);
+                // }}
+                title="Flip the board"
+              >
+                <RefreshCw className="hover:text-white mx-2" size={18} />
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

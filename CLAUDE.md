@@ -198,7 +198,7 @@ cd server && npx prisma generate # Regenerate Prisma client
 - [ ] Render move history list
 - [x] Handle game end (checkmate/stalemate toast notifications)
 - [ ] Add game timer display (countdown clocks)
-- [ ] Add pawn promotion piece selection UI
+- [x] Add pawn promotion piece selection UI
 
 **Bugs fixed during v0.2:**
 - [x] Fix `message.playload` typo in GameManager.ts → `message.payload`
@@ -208,9 +208,6 @@ cd server && npx prisma generate # Regenerate Prisma client
 **Acceptance:** Two browsers, same gameId, real-time sync, legal move enforcement. Play a full game to completion. **PASSED.**
 
 **Remaining v0.2 cleanup (before moving to v0.3):**
-- [ ] Fix: click-to-move doesn't send move to server (onSquareClick missing socket.send)
-- [ ] Fix: isPromoting uses chess.history() instead of chess.moves() on client
-- [ ] Remove nested try/catch and commented-out code in onPieceDrop
 - [ ] Remove debug console.logs before committing
 - [ ] Use gameAdded state to show "Waiting for opponent..." or remove unused state
 
